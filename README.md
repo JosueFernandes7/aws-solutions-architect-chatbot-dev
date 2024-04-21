@@ -2,6 +2,11 @@
 
 Este repositório contém uma solução básica de chatbot desenvolvida com o auxílio de um modelo de linguagem natural (LLM - Mixtral-8x7b-32768) para simular as interações com um arquiteto de soluções AWS. A solução é projetada para fornecer respostas claras e precisas às dúvidas dos usuários sobre os serviços da AWS.
 
+
+## Preview 🖼️
+
+![Chabtot AWS Arquiteto de Soluções](assets/preview.gif)
+
 **Instruções de Uso:**
 
 1. Clone este repositório:
