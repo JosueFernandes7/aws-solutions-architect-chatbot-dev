@@ -13,7 +13,7 @@ def extract_text_from_pdf():
 
 def split_into_chunks(pages):
   text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size = 2000, 
+    chunk_size = 3000, 
     chunk_overlap = 200, 
     length_function = len)
 
@@ -24,11 +24,8 @@ def init_embeddings_model(embed_model_id = 'sentence-transformers/all-MiniLM-L6-
  return HuggingFaceEmbeddings(model_name=embed_model_id), embed_model_id
 
 def create_vector_store(core_embeddings_model, documents, embed_model_id):
-  store = LocalFileStore("./cache/")
 
-  embedder = CacheBackedEmbeddings.from_bytes_store(
-      core_embeddings_model, store, namespace=embed_model_id
-  )
+  embedder = HuggingFaceEmbeddings(model_name='sentence-transformers/distiluse-base-multilingual-cased-v1')
 
   vector_store = FAISS.from_documents(documents, embedder)
 
@@ -40,9 +37,6 @@ def save_vector_store(vector_store):
 def load_vector_store():
     return FAISS.load_local('aws-overview-index', HuggingFaceEmbeddings(model_name='sentence-transformers/distiluse-base-multilingual-cased-v1'), allow_dangerous_deserialization=True)
   
-  
-db = load_vector_store()
-
 def main():
     pages = extract_text_from_pdf()
     documents = split_into_chunks(pages)
@@ -54,3 +48,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+try:
+  db = load_vector_store()
+except Exception as e:
+  print(e)
+  main()
+  load_vector_store()

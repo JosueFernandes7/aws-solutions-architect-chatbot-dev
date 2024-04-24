@@ -44,6 +44,13 @@ def get_query_embeddings(query):
   response = requests.post(api_url, headers=headers, json={"inputs": query, "options":{"wait_for_model":True}})
   return response.json()
 
+def query_expansion(query):
+  prompt = f"""Esse é minha pergunta: {query}
+  Me retorne uma Lista com 5 jeitos de escrever essa mesma pergunta em portugues.
+  Retorne apenas a lista sem nenhuma frase introdutória, nem nada, apenas a lista
+  """
+  
+  return get_groq_response(prompt, 'gemma-7b-it')
 
 def get_context(query):
   embedding_vector = get_query_embeddings(query)
@@ -55,8 +62,11 @@ def get_context(query):
   return context
 
 def get_answer(query, model_id = 'mixtral-8x7b-32768'):
-
+  expanded_query = query_expansion(query)
+  print(expanded_query)
   context = get_context(query)
+  print(context)
+  
   prompt = build_prompt(context, query)
   return get_groq_response(prompt, model_id)
 
