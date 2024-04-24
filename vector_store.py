@@ -10,6 +10,11 @@ def extract_text_from_pdf():
   pages = loader.load_and_split()
   return pages
 
+def ignore_table_of_contents_pages(pages, table_of_contents_final_page = 10):
+    for index, page in enumerate(pages):
+        if page.metadata.get('page') == table_of_contents_final_page + 1:
+            break
+    return pages[index:]
 
 def split_into_chunks(pages):
   text_splitter = RecursiveCharacterTextSplitter(
@@ -39,6 +44,7 @@ def load_vector_store():
   
 def main():
     pages = extract_text_from_pdf()
+    pages = ignore_table_of_contents_pages(pages)
     documents = split_into_chunks(pages)
     
     core_embeddings_model, embed_model_id = init_embeddings_model('sentence-transformers/distiluse-base-multilingual-cased-v1')
